@@ -72,6 +72,11 @@ func (c *Checker) Check(paths []string) []Violation {
 	return violations
 }
 
+// HasViolations returns true if any violations exist in the provided slice.
+func HasViolations(violations []Violation) bool {
+	return len(violations) > 0
+}
+
 // Summary returns a human-readable summary of violations.
 func Summary(violations []Violation) string {
 	if len(violations) == 0 {
