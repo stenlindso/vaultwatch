@@ -28,6 +28,11 @@ func TestSaveAndLoad(t *testing.T) {
 	if len(loaded.Paths) != len(paths) {
 		t.Errorf("expected %d paths, got %d", len(paths), len(loaded.Paths))
 	}
+	for i, p := range paths {
+		if loaded.Paths[i] != p {
+			t.Errorf("expected path[%d] = %q, got %q", i, p, loaded.Paths[i])
+		}
+	}
 }
 
 func TestLoad_MissingFile(t *testing.T) {
