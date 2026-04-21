@@ -109,3 +109,34 @@ func TestRecord_AutoID(t *testing.T) {
 		t.Error("expected auto-generated ID, got empty string")
 	}
 }
+
+func TestList_IsolatedByEnvironment(t *testing.T) {
+	store := newTempStore(t)
+	base := time.Now().UTC()
+
+	for _, env := range []string{"prod", "staging", "prod"} {
+		err := store.Record(history.Entry{
+			Environment: env,
+			Timestamp:   base,
+		})
+		if err != nil {
+			t.Fatalf("Record %s: %v", env, err)
+		}
+	}
+
+	prodEntries, err := store.List("prod")
+	if err != nil {
+		t.Fatalf("List prod: %v", err)
+	}
+	if len(prodEntries) != 2 {
+		t.Errorf("expected 2 prod entries, got %d", len(prodEntries))
+	}
+
+	stagingEntries, err := store.List("staging")
+	if err != nil {
+		t.Fatalf("List staging: %v", err)
+	}
+	if len(stagingEntries) != 1 {
+		t.Errorf("expected 1 staging entry, got %d", len(stagingEntries))
+	}
+}
