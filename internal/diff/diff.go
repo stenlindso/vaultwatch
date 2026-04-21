@@ -4,9 +4,15 @@ import "sort"
 
 // Result holds the outcome of comparing two sets of secret paths.
 type Result struct {
-	OnlyInA  []string
-	OnlyInB  []string
-	InBoth   []string
+	OnlyInA []string
+	OnlyInB []string
+	InBoth  []string
+}
+
+// IsEmpty reports whether the Result contains no differences between
+// the two sets (i.e. OnlyInA and OnlyInB are both empty).
+func (r Result) IsEmpty() bool {
+	return len(r.OnlyInA) == 0 && len(r.OnlyInB) == 0
 }
 
 // Compare returns a Result describing the symmetric difference between
