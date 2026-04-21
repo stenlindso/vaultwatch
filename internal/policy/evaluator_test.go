@@ -63,3 +63,17 @@ func TestEvaluateAll_MultipleEnvs(t *testing.T) {
 		t.Errorf("expected 1 passing env, got %d", passed)
 	}
 }
+
+func TestEvaluate_EmptyPaths(t *testing.T) {
+	c := makeChecker([]Rule{
+		{Type: RuleRequired, Pattern: "secret/app"},
+	})
+	e := NewEvaluator(c)
+	result := e.Evaluate("prod", []string{})
+	if result.Passed {
+		t.Error("expected failure when required path is missing")
+	}
+	if len(result.Violations) == 0 {
+		t.Error("expected at least one violation for missing required path")
+	}
+}
