@@ -10,9 +10,9 @@ import (
 
 func makeEnvReport(added, removed []string, violations []policy.Violation) report.EnvReport {
 	return report.EnvReport{
-		BaseEnv:   "prod",
-		TargetEnv: "staging",
-		Diff:      diff.Result{Added: added, Removed: removed},
+		BaseEnv:    "prod",
+		TargetEnv:  "staging",
+		Diff:       diff.Result{Added: added, Removed: removed},
 		Violations: violations,
 	}
 }
@@ -61,5 +61,20 @@ func TestBuilder_MultipleEnvs(t *testing.T) {
 	r := b.Build()
 	if len(r.Environments) != 2 {
 		t.Fatalf("expected 2 env reports, got %d", len(r.Environments))
+	}
+}
+
+func TestBuilder_EmptyBuild(t *testing.T) {
+	// A builder with no env reports should produce a report with no diffs or violations.
+	b := report.NewBuilder()
+	r := b.Build()
+	if r.HasAnyDiffs() {
+		t.Error("expected HasAnyDiffs to be false for empty report")
+	}
+	if r.HasAnyViolations() {
+		t.Error("expected HasAnyViolations to be false for empty report")
+	}
+	if len(r.Environments) != 0 {
+		t.Errorf("expected 0 env reports, got %d", len(r.Environments))
 	}
 }
