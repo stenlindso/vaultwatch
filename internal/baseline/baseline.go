@@ -4,6 +4,7 @@ package baseline
 
 import (
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/youorg/vaultwatch/internal/snapshot"
@@ -62,6 +63,7 @@ func (m *Manager) Load(env, label string) ([]string, error) {
 }
 
 // Diff returns paths added or removed relative to the saved baseline.
+// Both returned slices are sorted lexicographically for deterministic output.
 func (m *Manager) Diff(env, label string, current []string) (added, removed []string, err error) {
 	base, err := m.Load(env, label)
 	if err != nil {
@@ -81,6 +83,8 @@ func (m *Manager) Diff(env, label string, current []string) (added, removed []st
 			removed = append(removed, p)
 		}
 	}
+	sort.Strings(added)
+	sort.Strings(removed)
 	return added, removed, nil
 }
 
