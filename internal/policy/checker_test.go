@@ -57,6 +57,22 @@ func TestCheck_NoRules(t *testing.T) {
 	}
 }
 
+func TestCheck_MultipleViolations(t *testing.T) {
+	rules := []Rule{
+		{Pattern: `^secret/prod/.*`, Deny: true},
+	}
+	checker := NewChecker(rules)
+	paths := []string{
+		"secret/prod/db",
+		"secret/prod/api",
+		"secret/staging/db",
+	}
+	violations := checker.Check(paths)
+	if len(violations) != 2 {
+		t.Fatalf("expected 2 violations, got %d", len(violations))
+	}
+}
+
 func TestSummary_NoViolations(t *testing.T) {
 	s := Summary(nil)
 	if s != "no policy violations found" {
