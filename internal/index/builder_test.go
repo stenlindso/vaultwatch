@@ -76,3 +76,14 @@ func TestSubset_FiltersEnvironments(t *testing.T) {
 		t.Error("staging should not be in subset")
 	}
 }
+
+func TestSubset_EmptyFilter(t *testing.T) {
+	idx := New()
+	idx.Add("prod", "secret/a")
+	idx.Add("staging", "secret/b")
+
+	sub := Subset(idx, []string{})
+	if len(sub.Environments()) != 0 {
+		t.Errorf("expected empty subset when filter is empty, got %d environments", len(sub.Environments()))
+	}
+}
